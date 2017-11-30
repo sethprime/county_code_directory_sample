@@ -47,7 +47,7 @@ function ccd_get_path($node = NULL) {
 
     // Good EFQ/file_attach_load tutuorial:
     // http://timonweb.com/posts/loading-only-one-field-from-an-entity-or-node-in-drupal-7/
-    // Replace this with a hard coded field ids for more speed.
+    // Replace this with a hard coded field ids for more speed and fragility.
     $fields = field_info_instances('node', 'county_code_directory_chapter');
 
     // Build object for field_attach_load.
@@ -64,8 +64,7 @@ function ccd_get_path($node = NULL) {
     field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_chapter_chapter_number']['field_id']));
 
     // Load the parent node id. Chapters can be children of parts, divisions, or
-    // titles.
-    // Start with the most specific. Load and check.
+    // titles. Start with the most specific. Load and check.
     // Part.
     field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_chapter_parent_part']['field_id']));
     if (!isset($node[$parent]->field_ccd_chapter_parent_part[LANGUAGE_NONE][0]['target_id'])) {
@@ -78,8 +77,7 @@ function ccd_get_path($node = NULL) {
     }
 
     // Because we're only dealing with one node, and we want to match the
-    // incoming syntax
-    // pull the node object off the array.
+    // incoming syntax pull the node object off the array.
     $node = $node[$parent];
   }
 
@@ -195,8 +193,7 @@ function ccd_get_path($node = NULL) {
     field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_title_title_number']['field_id']));
 
     // Because we're only dealing with one node, and we want to match the
-    // incoming syntax
-    // pull the node object of the array.
+    // incoming syntax pull the node object off the array.
     $node = $node[$parent];
   }
 
