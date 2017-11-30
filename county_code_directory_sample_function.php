@@ -36,8 +36,10 @@ function ccd_get_path($node = NULL) {
     $type = "Section";
     $ccd_index_number = $node->field_ccd_section_section_number[LANGUAGE_NONE][0]['value'];
     $ccd_index_number = str_pad($ccd_index_number, 3, '0', STR_PAD_LEFT);
+
     // The title to display in results. Don't overwrite it.
     $title = $node->title;
+
     // Build this out back to front.
     $path = '#' . $node->field_ccd_section_section_number[LANGUAGE_NONE][0]['value'];
     $parent = $node->field_ccd_section_parent_chapter[LANGUAGE_NONE][0]['target_id'];
@@ -65,12 +67,15 @@ function ccd_get_path($node = NULL) {
 
     // Load the parent node id. Chapters can be children of parts, divisions, or
     // titles. Start with the most specific. Load and check.
+
     // Part.
     field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_chapter_parent_part']['field_id']));
     if (!isset($node[$parent]->field_ccd_chapter_parent_part[LANGUAGE_NONE][0]['target_id'])) {
+
       // Division.
       field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_chapter_parent_divisio']['field_id']));
       if (!isset($node[$parent]->field_ccd_chapter_parent_divisio[LANGUAGE_NONE][0]['target_id'])) {
+
         // Title.
         field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_chapter_parent_title']['field_id']));
       }
@@ -96,8 +101,8 @@ function ccd_get_path($node = NULL) {
     if (isset($node->field_ccd_chapter_parent_part[LANGUAGE_NONE][0]['target_id'])) {
       $parent = $node->field_ccd_chapter_parent_part[LANGUAGE_NONE][0]['target_id'];
       $parent_type = 'county_code_directory_part';
-      unset($node);
       $fields = field_info_instances('node', $parent_type);
+
       $node = array(
         $parent => (object) array(
           'nid' => $parent,
@@ -105,14 +110,17 @@ function ccd_get_path($node = NULL) {
           'type' => $parent_type,
         ),
       );
+
       field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_part_part_number']['field_id']));
       field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_part_parent_division']['field_id']));
     }
+
     elseif (isset($node->field_ccd_chapter_parent_divisio[LANGUAGE_NONE][0]['target_id'])) {
       $parent = $node->field_ccd_chapter_parent_divisio[LANGUAGE_NONE][0]['target_id'];
       $parent_type = 'county_code_directory_division';
       unset($node);
       $fields = field_info_instances('node', $parent_type);
+
       $node = array(
         $parent => (object) array(
           'nid' => $parent,
@@ -120,14 +128,18 @@ function ccd_get_path($node = NULL) {
           'type' => $parent_type,
         ),
       );
+
       field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_division_division_num']['field_id']));
       field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_division_parent_title']['field_id']));
     }
+
     elseif (isset($node->field_ccd_chapter_parent_title[LANGUAGE_NONE][0]['target_id'])) {
       $parent = $node->field_ccd_chapter_parent_title[LANGUAGE_NONE][0]['target_id'];
       $parent_type = 'county_code_directory_title';
+
       unset($node);
       $fields = field_info_instances('node', $parent_type);
+
       $node = array(
         $parent => (object) array(
           'nid' => $parent,
@@ -135,8 +147,10 @@ function ccd_get_path($node = NULL) {
           'type' => $parent_type,
         ),
       );
+
       field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_title_title_number']['field_id']));
     }
+
     else {
       // Error: Chapter with no parent.
     }
@@ -157,6 +171,7 @@ function ccd_get_path($node = NULL) {
 
     unset($node);
     $fields = field_info_instances('node', 'county_code_directory_division');
+
     $node = array(
       $parent => (object) array(
         'nid' => $parent,
@@ -164,6 +179,7 @@ function ccd_get_path($node = NULL) {
         'type' => 'county_code_directory_division',
       ),
     );
+
     field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_division_division_num']['field_id']));
     field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_division_parent_title']['field_id']));
 
@@ -183,6 +199,7 @@ function ccd_get_path($node = NULL) {
 
     unset($node);
     $fields = field_info_instances('node', 'county_code_directory_title');
+
     $node = array(
       $parent => (object) array(
         'nid' => $parent,
@@ -190,6 +207,7 @@ function ccd_get_path($node = NULL) {
         'type' => 'county_code_directory_title',
       ),
     );
+
     field_attach_load('node', $node, FIELD_LOAD_CURRENT, array('field_id' => $fields['field_ccd_title_title_number']['field_id']));
 
     // Because we're only dealing with one node, and we want to match the
